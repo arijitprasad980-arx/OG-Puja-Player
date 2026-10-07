@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#100d0b" />
+    <title>Pujo Radio</title>
+    <link rel="stylesheet" href="screen.css" />
+    <script src="https://accounts.google.com/gsi/client" defer></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <main id="page" class="screen-canvas" aria-label="Pujo Radio app"></main>
+    </div>
+    <dialog id="mahalaya-alarm-settings" class="mahalaya-notice" aria-labelledby="mahalaya-alarm-title">
+      <div class="mahalaya-notice-content">
+        <h1 id="mahalaya-alarm-title">Festival reminders</h1>
+        <p class="mahalaya-alarm-status" id="mahalaya-alarm-status" role="status" aria-live="polite"></p>
+        <div class="mahalaya-alarm-time-grid">
+          <label for="durga-alarm-time">Durga Sasthi reminder <span>Oct 15 &amp; 16</span>
+            <input id="durga-alarm-time" type="time" value="04:00" required />
+          </label>
+          <label for="kali-alarm-time">Kali Puja reminder <span>Nov 7 &amp; 8</span>
+            <input id="kali-alarm-time" type="time" value="04:00" required />
+          </label>
+        </div>
+        <button id="mahalaya-alarm-save-times" type="button" class="mahalaya-secondary-button">Save times</button>
+        <div class="mahalaya-notice-actions">
+          <a class="mahalaya-calendar-link" data-calendar-festival="mahalaya" target="_blank" rel="noopener noreferrer">Mahalaya · Oct 9–10</a>
+          <a class="mahalaya-calendar-link" data-calendar-festival="durga" target="_blank" rel="noopener noreferrer">Durga Sasthi · Oct 15–16</a>
+          <a class="mahalaya-calendar-link" data-calendar-festival="kali" target="_blank" rel="noopener noreferrer">Kali Puja · Nov 7–8</a>
+        </div>
+        <form method="dialog">
+          <button type="submit" class="mahalaya-secondary-button">Close</button>
+        </form>
+      </div>
+    </dialog>
+    <dialog id="mahalaya-notice" class="mahalaya-notice" aria-labelledby="mahalaya-notice-title" aria-describedby="mahalaya-notice-message">
+      <div class="mahalaya-notice-content">
+        <p class="mahalaya-notice-eyebrow">Mahalaya 2026</p>
+        <h1 id="mahalaya-notice-title"></h1>
+        <p id="mahalaya-notice-message"></p>
+        <form method="dialog">
+          <button type="submit">Close</button>
+        </form>
+      </div>
+    </dialog>
+    <script src="song-storage.js"></script>
+    <script src="google-calendar-config.js"></script>
+    <script src="ui.js"></script>
+  </body>
+</html>
