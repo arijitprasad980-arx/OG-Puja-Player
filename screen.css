@@ -3,7 +3,7 @@
 html, body { min-width: 320px; min-height: 100%; margin: 0; background: #100d0b; }
 body { color: transparent; }
 .app-shell { display: flex; width: 100%; min-height: 100svh; align-items: center; justify-content: center; margin: 0; padding: 0; }
-#page.screen-canvas { position: relative; width: min(100vw, 442px); margin: 0 auto; padding: 0; overflow: hidden; }
+#page.screen-canvas { --bottom-nav-offset: max(3%, env(safe-area-inset-bottom)); position: relative; width: min(100vw, 442px); margin: 0 auto; padding: 0; overflow: hidden; }
 .screen-art { display: block; width: 100%; height: auto; user-select: none; }
 .dj-light-effects { position: absolute; z-index: 1; inset: 0; overflow: hidden; opacity: 0; pointer-events: none; transition: opacity .2s ease; }
 #page.dj-lights-on.dj-playing .dj-light-effects { opacity: 1; }
@@ -81,6 +81,7 @@ body { color: transparent; }
   .mahalaya-notice-content { padding: 24px 18px 20px; }
   .mahalaya-alarm-time-grid { grid-template-columns: 1fr; }
 }
+.audio-surface-overlay:not(.audio-surface-picker), .audio-player-popup { bottom: calc(var(--bottom-nav-offset) + clamp(44px, 14vw, 67px) + 12px); }
 .audio-surface-overlay { position: fixed; z-index: 8; right: 0; bottom: 10%; left: 0; display: grid; width: min(88vw, 384px); aspect-ratio: 381 / 90; place-items: end center; padding-bottom: 12px; margin-inline: auto; border: 1px solid rgba(220, 216, 207, .24); border-radius: 13px; background: linear-gradient(135deg, rgba(29, 27, 25, .68), rgba(20, 19, 18, .76) 48%, rgba(34, 32, 30, .68)); box-shadow: inset 0 1px 1px rgba(255, 255, 255, .18), inset 0 -1px 2px rgba(0, 0, 0, .24), 0 4px 14px rgba(0, 0, 0, .18); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); pointer-events: none; user-select: none; }
 .audio-player-stack { display: contents; }
 .audio-surface-picker { position: fixed; z-index: 8; right: 0; bottom: 15%; left: 0; display: block; width: min(78vw, 340px); height: clamp(312px, 47vh, 340px); min-height: 0; aspect-ratio: auto; padding: 5px 11px; margin-inline: auto; border-color: rgba(255, 243, 216, .3); background: rgba(24, 22, 20, .28); box-shadow: inset 0 1px 1px rgba(255, 255, 255, .14); backdrop-filter: none; -webkit-backdrop-filter: none; }
@@ -124,7 +125,7 @@ body { color: transparent; }
 .audio-track-empty { margin: 8px 2px; color: #fff3d8; font: 12px/1.5 Arial, sans-serif; text-shadow: 0 1px 3px rgba(0, 0, 0, .7); }
 .audio-track-empty code { font: inherit; font-weight: 600; }
 .audio-track-option:focus-visible { outline: 2px solid #ffe4a9; outline-offset: -2px; }
-.audio-player-popup { position: fixed; z-index: 8; top: calc(78vh + 10px); right: 0; left: 0; display: grid; width: min(88vw, 384px); height: 90px; place-items: end center; padding-bottom: 12px; overflow: hidden; margin-inline: auto; border: 1px solid rgba(220, 216, 207, .24); border-radius: 13px; background: linear-gradient(135deg, rgba(29, 27, 25, .88), rgba(20, 19, 18, .92) 48%, rgba(34, 32, 30, .88)); box-shadow: inset 0 1px 1px rgba(255, 255, 255, .18), 0 3px 10px rgba(0, 0, 0, .2); animation: player-popup-in .35s ease-out both; }
+.audio-player-popup { position: fixed; z-index: 8; top: auto; right: 0; left: 0; display: grid; width: min(88vw, 384px); height: 90px; place-items: end center; padding-bottom: 12px; overflow: hidden; margin-inline: auto; border: 1px solid rgba(220, 216, 207, .24); border-radius: 13px; background: linear-gradient(135deg, rgba(29, 27, 25, .88), rgba(20, 19, 18, .92) 48%, rgba(34, 32, 30, .88)); box-shadow: inset 0 1px 1px rgba(255, 255, 255, .18), 0 3px 10px rgba(0, 0, 0, .2); animation: player-popup-in .35s ease-out both; }
 .audio-player-popup .audio-controls { pointer-events: auto; }
 @keyframes player-popup-in {
   from { opacity: 0; }
@@ -160,7 +161,7 @@ body { color: transparent; }
   from { transform: translateX(calc(-50% - 24px)); }
   to { transform: translateX(0); }
 }
-.asset-bottom-nav { position: absolute; z-index: 4; bottom: 3%; left: 4%; width: 92%; aspect-ratio: 719 / 109; }
+.asset-bottom-nav { position: absolute; z-index: 4; bottom: var(--bottom-nav-offset); left: 4%; width: 92%; aspect-ratio: 719 / 109; }
 .asset-bottom-nav > img { display: block; width: 100%; height: 100%; user-select: none; }
 .asset-bottom-nav .screen-hotspot { z-index: 5; }
 .asset-bottom-nav .nav-active::before { position: absolute; top: 36%; left: 50%; width: 44%; height: 68%; transform: translate(-50%, -50%); border-radius: 50%; background: radial-gradient(ellipse, rgba(255, 205, 92, .34), rgba(255, 174, 53, .16) 42%, transparent 72%); content: ""; pointer-events: none; animation: nav-glow 1.6s ease-in-out infinite alternate; }
