@@ -153,15 +153,17 @@ body { color: transparent; }
 .audio-progress::before { position: absolute; top: 6px; right: 0; left: 0; height: 6px; border-radius: 3px; background: rgba(255, 243, 216, .24); content: ""; }
 .audio-progress-fill { position: absolute; top: 6px; left: 0; display: block; width: 0; height: 6px; border-radius: 3px; background: #e9a52d; }
 .audio-controls { display: grid; width: min(70%, 250px); height: 18px; grid-template-columns: repeat(7, minmax(0, 1fr)); grid-template-rows: 18px; place-items: center; overflow: visible; }
-.audio-control-button { display: grid; width: clamp(28px, 8vw, 36px); height: clamp(28px, 8vw, 36px); place-items: center; padding: 0; border: 0; border-radius: 50%; background: transparent; cursor: pointer; pointer-events: auto; }
+.audio-control-button { display: grid; width: clamp(28px, 8vw, 36px); height: clamp(28px, 8vw, 36px); place-items: center; padding: 0; border: 0; border-radius: 50%; background: transparent; cursor: pointer; pointer-events: auto; -webkit-tap-highlight-color: transparent; }
 .audio-control-button:disabled { cursor: default; opacity: .55; }
 .audio-control-icon { display: block; width: clamp(19px, 5vw, 22px); height: clamp(19px, 5vw, 22px); overflow: visible; fill: none; stroke: #ffc04d; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 1px rgba(255, 181, 46, .48)); transition: filter .18s ease, transform .18s ease; }
 .audio-control-icon text { fill: currentColor; stroke: none; color: #ffc04d; font: 600 6px/1 Arial, sans-serif; letter-spacing: -.25px; text-anchor: middle; }
 .audio-control-button[data-player-control="play-pause"] .play-icon { fill: #ffc04d; stroke-width: 1.2; }
 .audio-control-button[data-player-control="play-pause"][aria-label="Play"] .pause-icon { display: none; }
 .audio-control-button[data-player-control="play-pause"][aria-label="Pause"] .play-icon { display: none; }
-.audio-control-button:hover:not(:disabled) { background: rgba(255, 190, 77, .12); }
-.audio-control-button:hover:not(:disabled) .audio-control-icon { filter: drop-shadow(0 0 3px rgba(255, 181, 46, .8)); transform: scale(1.08); }
+@media (hover: hover) and (pointer: fine) {
+  .audio-control-button:hover:not(:disabled) { background: rgba(255, 190, 77, .12); }
+  .audio-control-button:hover:not(:disabled) .audio-control-icon { filter: drop-shadow(0 0 3px rgba(255, 181, 46, .8)); transform: scale(1.08); }
+}
 .audio-control-button[data-player-control="shuffle"][aria-pressed="true"] .audio-control-icon { filter: drop-shadow(0 0 3px #ffb52e) drop-shadow(0 0 7px rgba(255, 173, 48, .9)); }
 .audio-control-button[data-player-control="repeat"][aria-pressed="true"] .audio-control-icon { filter: drop-shadow(0 0 3px #ffb52e) drop-shadow(0 0 7px rgba(255, 173, 48, .9)); }
 .audio-control-button:focus-visible { outline: 2px solid #ffe4a9; outline-offset: 1px; }
