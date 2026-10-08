@@ -117,16 +117,16 @@ function themeToggle() {
 
 function playerControls() {
   const controls = [
-    ["Shuffle", "shuffle", "suffle.png"],
-    ["Previous song", "previous", "prev.png"],
-    ["Seek backward 30 seconds", "seek-backward", "backward.png"],
-    ["Play or pause", "play-pause", "pause.png"],
-    ["Seek forward 30 seconds", "seek-forward", "forward.png"],
-    ["Next song", "next", "next.png"],
-    ["Repeat current song", "repeat", "repeat.png"]
+    ["Shuffle", "shuffle", '<path d="m16 3 5 0 0 5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/>'],
+    ["Previous song", "previous", '<path d="M19 5 9 12l10 7V5ZM5 5v14"/>'],
+    ["Seek backward 30 seconds", "seek-backward", '<path d="M3 11a9 9 0 1 1 2.2 6M3 4v7h7"/><text x="12" y="14.5">30</text><path d="m12.5 9-1.5 1.2"/>'],
+    ["Play or pause", "play-pause", '<path class="play-icon" d="m9 5 10 7-10 7V5Z"/><path class="pause-icon" d="M9 5v14M15 5v14"/>'],
+    ["Seek forward 30 seconds", "seek-forward", '<path d="M21 11a9 9 0 1 0-2.2 6M21 4v7h-7"/><text x="12" y="14.5">30</text><path d="m11.5 9 1.5 1.2"/>'],
+    ["Next song", "next", '<path d="m5 5 10 7-10 7V5ZM19 5v14"/>'],
+    ["Repeat current song", "repeat", '<path d="M17 2l4 4-4 4M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4M21 13v2a3 3 0 0 1-3 3H3"/>']
   ];
   return `<div class="audio-controls" role="group" aria-label="Audio player controls">
-    ${controls.map(([label, action, image]) => `<button class="audio-control-button" type="button" data-player-control="${action}" aria-label="${label}" title="${label}"><img src="${image}" alt="" draggable="false" /></button>`).join("")}
+    ${controls.map(([label, action, icon]) => `<button class="audio-control-button" type="button" data-player-control="${action}" aria-label="${label}" title="${label}"><svg class="audio-control-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">${icon}</svg></button>`).join("")}
   </div>`;
 }
 
@@ -258,7 +258,6 @@ function updatePlayerUi() {
   const creators = page.querySelectorAll("[data-player-creator]");
   const status = page.querySelector("[data-player-status]");
   const playButton = page.querySelector('[data-player-control="play-pause"]');
-  const playIcon = playButton?.querySelector("img");
   const progressFill = page.querySelector("[data-player-progress-fill]");
   const currentTime = page.querySelector("[data-player-current-time]");
   const durationTime = page.querySelector("[data-player-duration]");
@@ -281,9 +280,8 @@ function updatePlayerUi() {
   page.querySelectorAll("[data-player-control]").forEach(button => {
     button.disabled = noTrack;
   });
-  if (playButton && playIcon) {
+  if (playButton) {
     const isPlaying = !audio.paused && !audio.ended;
-    playIcon.src = isPlaying ? "pause.png" : "play.png";
     playButton.setAttribute("aria-label", isPlaying ? "Pause" : "Play");
     playButton.title = isPlaying ? "Pause" : "Play";
   }
@@ -798,7 +796,7 @@ function render() {
     : "";
   const screenContent = pageState.name === "songs"
     ? `<div class="songs-scroll-area" aria-label="Song playlists"><div class="songs-scroll-content"><img class="screen-art" src="${encodeURI(image)}" alt="${alt}" draggable="false" />${hotspots(false, false, false)}</div></div>${themeToggle()}${navigation()}`
-    : `<img class="screen-art" src="${encodeURI(image)}" alt="${alt}" draggable="false" />${pageState.name === "home" ? '<img class="home-logo" src="og%20logo.png" alt="OG Pujo Player" draggable="false" /><img class="home-center-logo" src="font.png" alt="OG Pujo Player" draggable="false" />' : ""}${pageState.name === "dj" ? `<div class="dj-light-effects" aria-hidden="true"><span class="dj-stage-light dj-stage-light-1"></span><span class="dj-stage-light dj-stage-light-2"></span><span class="dj-stage-light dj-stage-light-3"></span><span class="dj-stage-light dj-stage-light-4"></span><span class="dj-stage-light dj-stage-light-5"></span><span class="dj-stage-light dj-stage-light-6"></span></div><button class="dj-light-toggle${pageState.djLightsOn ? " is-on" : ""}" type="button" data-action="dj-lights-toggle" aria-label="Turn disco lights ${pageState.djLightsOn ? "off" : "on"}" aria-pressed="${pageState.djLightsOn}" title="Turn disco lights ${pageState.djLightsOn ? "off" : "on"}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6m-5 3h4m-2-20a7 7 0 0 0-4.4 12.45c.9.74 1.4 1.52 1.4 2.55h6c0-1.03.5-1.81 1.4-2.55A7 7 0 0 0 12 1Z"/></svg></button>` : ""}${pageState.name === "mahalaya" ? mahalayaReminderButton() : ""}${countdowns}${hotspots()}`;
+    : `<img class="screen-art" src="${encodeURI(image)}" alt="${alt}" draggable="false" />${pageState.name === "home" ? '<img class="home-logo" src="og%20logo.png" alt="OG Pujo Player" draggable="false" /><img class="home-center-logo" src="fontbig.png" alt="OG Pujo Player" draggable="false" />' : ""}${pageState.name === "dj" ? `<div class="dj-light-effects" aria-hidden="true"><span class="dj-stage-light dj-stage-light-1"></span><span class="dj-stage-light dj-stage-light-2"></span><span class="dj-stage-light dj-stage-light-3"></span><span class="dj-stage-light dj-stage-light-4"></span><span class="dj-stage-light dj-stage-light-5"></span><span class="dj-stage-light dj-stage-light-6"></span></div><button class="dj-light-toggle${pageState.djLightsOn ? " is-on" : ""}" type="button" data-action="dj-lights-toggle" aria-label="Turn disco lights ${pageState.djLightsOn ? "off" : "on"}" aria-pressed="${pageState.djLightsOn}" title="Turn disco lights ${pageState.djLightsOn ? "off" : "on"}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6m-5 3h4m-2-20a7 7 0 0 0-4.4 12.45c.9.74 1.4 1.52 1.4 2.55h6c0-1.03.5-1.81 1.4-2.55A7 7 0 0 0 12 1Z"/></svg></button>` : ""}${pageState.name === "mahalaya" ? mahalayaReminderButton() : ""}${countdowns}${hotspots()}`;
   page.innerHTML = screenContent;
   page.classList.toggle("dj-lights-on", pageState.name === "dj" && pageState.djLightsOn);
   updatePlaylistSongSearch("durga");

@@ -155,9 +155,15 @@ body { color: transparent; }
 .audio-controls { display: grid; width: min(70%, 250px); height: 18px; grid-template-columns: repeat(7, minmax(0, 1fr)); grid-template-rows: 18px; place-items: center; overflow: visible; }
 .audio-control-button { display: grid; width: clamp(28px, 8vw, 36px); height: clamp(28px, 8vw, 36px); place-items: center; padding: 0; border: 0; border-radius: 50%; background: transparent; cursor: pointer; pointer-events: auto; }
 .audio-control-button:disabled { cursor: default; opacity: .55; }
-.audio-control-button img { display: block; width: clamp(15px, 4vw, 18px); height: clamp(15px, 4vw, 18px); object-fit: contain; }
-.audio-control-button[data-player-control="shuffle"][aria-pressed="true"] img { filter: drop-shadow(0 0 3px #ffb52e) drop-shadow(0 0 7px rgba(255, 173, 48, .9)); }
-.audio-control-button[data-player-control="repeat"][aria-pressed="true"] img { filter: drop-shadow(0 0 3px #ffb52e) drop-shadow(0 0 7px rgba(255, 173, 48, .9)); }
+.audio-control-icon { display: block; width: clamp(19px, 5vw, 22px); height: clamp(19px, 5vw, 22px); overflow: visible; fill: none; stroke: #ffc04d; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 1px rgba(255, 181, 46, .48)); transition: filter .18s ease, transform .18s ease; }
+.audio-control-icon text { fill: currentColor; stroke: none; color: #ffc04d; font: 600 6px/1 Arial, sans-serif; letter-spacing: -.25px; text-anchor: middle; }
+.audio-control-button[data-player-control="play-pause"] .play-icon { fill: #ffc04d; stroke-width: 1.2; }
+.audio-control-button[data-player-control="play-pause"][aria-label="Play"] .pause-icon { display: none; }
+.audio-control-button[data-player-control="play-pause"][aria-label="Pause"] .play-icon { display: none; }
+.audio-control-button:hover:not(:disabled) { background: rgba(255, 190, 77, .12); }
+.audio-control-button:hover:not(:disabled) .audio-control-icon { filter: drop-shadow(0 0 3px rgba(255, 181, 46, .8)); transform: scale(1.08); }
+.audio-control-button[data-player-control="shuffle"][aria-pressed="true"] .audio-control-icon { filter: drop-shadow(0 0 3px #ffb52e) drop-shadow(0 0 7px rgba(255, 173, 48, .9)); }
+.audio-control-button[data-player-control="repeat"][aria-pressed="true"] .audio-control-icon { filter: drop-shadow(0 0 3px #ffb52e) drop-shadow(0 0 7px rgba(255, 173, 48, .9)); }
 .audio-control-button:focus-visible { outline: 2px solid #ffe4a9; outline-offset: 1px; }
 @keyframes audio-marquee {
   from { transform: translateX(calc(-50% - 24px)); }
