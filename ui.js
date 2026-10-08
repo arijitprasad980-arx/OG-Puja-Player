@@ -447,37 +447,19 @@ function eventCountdown(event, name) {
 }
 
 function durgaSasthiReminderButton() {
-  return `<a class="countdown-reminder sasthi-countdown-reminder" data-calendar-reminder="durga" href="${festivalCalendarTemplateUrl("durga")}" target="_blank" rel="noopener noreferrer"><span class="reminder-label">SET REMINDER</span>${reminderBellIcon()}</a>`;
+  return `<button class="countdown-reminder sasthi-countdown-reminder" type="button" data-calendar-reminder="durga"><span class="reminder-label">SET REMINDER</span>${reminderBellIcon()}<span class="reminder-action-status" role="status" aria-live="polite"></span></button>`;
 }
 
 function kaliPujaReminderButton() {
-  return `<a class="countdown-reminder kali-countdown-reminder" data-calendar-reminder="kali" href="${festivalCalendarTemplateUrl("kali")}" target="_blank" rel="noopener noreferrer"><span class="reminder-label">SET REMINDER</span>${reminderBellIcon()}</a>`;
+  return `<button class="countdown-reminder kali-countdown-reminder" type="button" data-calendar-reminder="kali"><span class="reminder-label">SET REMINDER</span>${reminderBellIcon()}<span class="reminder-action-status" role="status" aria-live="polite"></span></button>`;
 }
 
 function mahalayaReminderButton() {
-  return `<a class="mahalaya-countdown-reminder" data-calendar-reminder="mahalaya" href="${festivalCalendarTemplateUrl("mahalaya")}" target="_blank" rel="noopener noreferrer"><span class="reminder-label">SET REMINDER</span>${reminderBellIcon()}</a>`;
+  return `<button class="mahalaya-countdown-reminder" type="button" data-calendar-reminder="mahalaya"><span class="reminder-label">SET REMINDER</span>${reminderBellIcon()}<span class="reminder-action-status" role="status" aria-live="polite"></span></button>`;
 }
 
 function reminderBellIcon() {
   return `<svg class="reminder-bell" viewBox="0 0 24 24" aria-hidden="true"><path class="bell-outline" d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/><path class="bell-filled" d="M12 2a6 6 0 0 0-6 6v3.3c0 1.3-.5 2.5-1.4 3.4L3 16.3V18h18v-1.7l-1.6-1.6a4.8 4.8 0 0 1-1.4-3.4V8a6 6 0 0 0-6-6Zm-2 18a2 2 0 0 0 4 0h-4Z"/></svg>`;
-}
-
-function festivalCalendarTemplateUrl(festivalId) {
-  const festival = calendarReminderFestivals.find(item => item.id === festivalId);
-  if (!festival) return "https://calendar.google.com/calendar/";
-  const alarms = scheduledAlarms();
-  const eveAlarm = alarms.find(alarm => alarm.id === festival.eveId);
-  if (!eveAlarm) return "https://calendar.google.com/calendar/";
-  const localDateTime = timestamp => new Date(timestamp + 330 * 60000).toISOString().replace(/[-:]/g, "").slice(0, 15);
-  const params = new URLSearchParams({
-    action: "TEMPLATE",
-    text: `${festival.name} reminder`,
-    dates: `${localDateTime(eveAlarm.at)}/${localDateTime(eveAlarm.at + 15 * 60000)}`,
-    ctz: "Asia/Kolkata",
-    recur: "RRULE:FREQ=DAILY;COUNT=2",
-    details: `Eve reminder: ${festival.eveWish}\n\nFestival-day reminder: ${festival.dayWish}`
-  });
-  return `https://calendar.google.com/calendar/render?${params}`;
 }
 
 function updateCountdown() {
@@ -557,8 +539,10 @@ document.addEventListener("visibilitychange", () => {
   if (!document.hidden) updateMahalayaNotice();
 });
 
-function setAlarmStatus(message) {
+function setAlarmStatus(message, trigger = null) {
   mahalayaAlarmStatus.textContent = message;
+  const actionStatus = trigger?.querySelector(".reminder-action-status");
+  if (actionStatus) actionStatus.textContent = message;
 }
 
 const calendarReminderFestivals = [
@@ -605,9 +589,6 @@ function updateGoogleCalendarLinks() {
     const time = new Intl.DateTimeFormat("en-IN", timeOptions).format(eveAlarm.at);
     link.textContent = `${festival.name} · ${eveDate} & ${dayDate} · ${time}`;
     link.href = "#";
-  });
-  page.querySelectorAll("[data-calendar-reminder]").forEach(link => {
-    link.href = festivalCalendarTemplateUrl(link.dataset.calendarReminder);
   });
 }
 
@@ -692,7 +673,7 @@ async function saveFestivalRemindersToGoogleCalendar(festival, trigger = null) {
   }
   let savedCount = 0;
   try {
-    setAlarmStatus("Connecting to Google Calendar…");
+    setAlarmStatus("Connecting to Google Calendar…", link);
     const accessToken = await requestGoogleCalendarAccess();
     const alarms = scheduledAlarms();
     const eveAlarm = alarms.find(alarm => alarm.id === festival.eveId);
@@ -706,10 +687,10 @@ async function saveFestivalRemindersToGoogleCalendar(festival, trigger = null) {
       await saveGoogleCalendarEvent(accessToken, calendarEvent);
       savedCount += 1;
     }
-    setAlarmStatus("Both reminders saved.");
+    setAlarmStatus("Both reminders saved.", link);
   } catch (error) {
     const partialSave = savedCount === 1 ? "One reminder saved. " : "";
-    setAlarmStatus(`${partialSave}${error.message}`);
+    setAlarmStatus(`${partialSave}${error.message}`, link);
   } finally {
     calendarSaveInProgress.delete(festival.id);
     if (link) {
@@ -723,7 +704,7 @@ document.querySelectorAll("[data-calendar-festival]").forEach(link => {
   link.addEventListener("click", event => {
     event.preventDefault();
     const festival = calendarReminderFestivals.find(item => item.id === link.dataset.calendarFestival);
-    if (festival) saveFestivalRemindersToGoogleCalendar(festival);
+    if (festival) saveFestivalRemindersToGoogleCalendar(festival, link);
   });
 });
 
@@ -847,6 +828,12 @@ function setTheme() {
 }
 
 page.addEventListener("click", event => {
+  const calendarReminderButton = event.target.closest("[data-calendar-reminder]");
+  if (calendarReminderButton) {
+    const festival = calendarReminderFestivals.find(item => item.id === calendarReminderButton.dataset.calendarReminder);
+    if (festival) saveFestivalRemindersToGoogleCalendar(festival, calendarReminderButton);
+    return;
+  }
   const trackOption = event.target.closest("[data-play-track]");
   if (trackOption) {
     selectTrack(trackOption.dataset.playlist, Number(trackOption.dataset.playTrack));
