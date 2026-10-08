@@ -67,6 +67,8 @@ const mahalayaAlarmStatus = document.querySelector("#mahalaya-alarm-status");
 const durgaAlarmTimeInput = document.querySelector("#durga-alarm-time");
 const kaliAlarmTimeInput = document.querySelector("#kali-alarm-time");
 const saveFestivalAlarmTimesButton = document.querySelector("#mahalaya-alarm-save-times");
+const shareMenu = document.querySelector("#share-menu");
+const shareMenuStatus = document.querySelector("#share-menu-status");
 durgaAlarmTimeInput.value = festivalAlarmTimes.durga;
 kaliAlarmTimeInput.value = festivalAlarmTimes.kali;
 const pageState = { name: "home", album: "durga", durgaSearch: "", kaliSearch: "", djSearch: "", durgaLibraryCollapsed: false, kaliLibraryCollapsed: false, djLibraryCollapsed: false, djLightsOn: false };
@@ -114,6 +116,63 @@ function themeToggle() {
   const icon = activeTheme === "day" ? "☾" : "☀";
   return `<button class="theme-toggle" type="button" data-action="theme" aria-label="Switch to ${nextTheme} mode" title="Switch to ${nextTheme} mode">${icon}</button>`;
 }
+
+function shareButton() {
+  return `<button class="share-toggle" type="button" data-action="open-share-menu" aria-label="Share this website" title="Share this website"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4 20-7ZM22 2 11 13"/></svg></button>`;
+}
+
+async function copyShareUrl() {
+  try {
+    await navigator.clipboard.writeText(window.location.href);
+    shareMenuStatus.textContent = "Link copied.";
+    return true;
+  } catch (error) {
+    console.error("Could not copy the current website URL.", error);
+    shareMenuStatus.textContent = "Could not copy link. You can still share using an option below.";
+    return false;
+  }
+}
+
+shareMenu.addEventListener("click", async event => {
+  const option = event.target.closest("[data-share-target]");
+  if (!option) return;
+
+  const url = window.location.href;
+  const target = option.dataset.shareTarget;
+  if (target === "copy") {
+    if (await copyShareUrl()) shareMenuStatus.textContent = "Link copied.";
+    return;
+  }
+
+  if (target === "whatsapp") {
+    window.open(`https://wa.me/?text=${encodeURIComponent(url)}`, "_blank", "noopener,noreferrer");
+    shareMenuStatus.textContent = await copyShareUrl()
+      ? "WhatsApp opened. The link is copied too."
+      : "WhatsApp opened, but the link could not be copied.";
+    return;
+  }
+
+  if (target === "facebook") {
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, "_blank", "noopener,noreferrer");
+    shareMenuStatus.textContent = await copyShareUrl()
+      ? "Facebook opened. The link is copied too."
+      : "Facebook opened, but the link could not be copied.";
+    return;
+  }
+
+  if (target === "instagram") {
+    window.open("https://www.instagram.com/", "_blank", "noopener,noreferrer");
+    shareMenuStatus.textContent = await copyShareUrl()
+      ? "Instagram opened. Paste the copied link into your post or bio."
+      : "Instagram opened, but the link could not be copied.";
+  }
+});
+
+document.addEventListener("click", event => {
+  if (!shareMenu.open || shareMenu.contains(event.target)) return;
+  if (event.target.closest('[data-action="open-share-menu"]')) return;
+  shareMenu.close();
+});
 
 function playerControls() {
   const controls = [
@@ -455,7 +514,7 @@ function kaliPujaReminderButton() {
 }
 
 function mahalayaReminderButton() {
-  return `<button class="mahalaya-countdown-reminder" type="button" data-calendar-reminder="mahalaya"><span class="reminder-label">SET REMINDER</span>${reminderBellIcon()}<span class="reminder-action-status" role="status" aria-live="polite"></span></button>`;
+  return `<div class="mahalaya-reminder-controls"><button class="mahalaya-countdown-reminder" type="button" data-calendar-reminder="mahalaya"><span class="reminder-label">SET REMINDER</span>${reminderBellIcon()}<span class="reminder-action-status" role="status" aria-live="polite"></span></button><button class="mahalaya-guide-button" type="button" data-action="open-mahalaya-guide" aria-label="Guide for reminder" title="Guide for reminder">Guide for reminder</button></div>`;
 }
 
 function reminderBellIcon() {
@@ -720,6 +779,10 @@ saveFestivalAlarmTimesButton.addEventListener("click", () => {
 
 function hotspots(includeNavigation = true, includeThemeToggle = true, includeBackButton = true) {
   const items = includeThemeToggle ? [themeToggle()] : [];
+  if (includeThemeToggle) items.push(shareButton());
+  if (pageState.name === "countdown") {
+    items.push('<button class="mahalaya-guide-button countdown-guide-button" type="button" data-action="open-mahalaya-guide" aria-label="Guide for reminder" title="Guide for reminder">Guide for reminder</button>');
+  }
   if (pageState.name === "home") {
     items.push(makeButton("Enter Durga songs", "home-durga", "open-durga", [6, 40.5, 42.5, 39.5]));
     items.push(makeButton("Enter Kali songs", "home-kali", "open-kali", [51.2, 40.5, 42.8, 39.5]));
@@ -776,7 +839,7 @@ function render() {
     ? `${eventCountdown("sasthi", "Durga Sasthi")}${durgaSasthiReminderButton()}${eventCountdown("kali", "Kali Puja")}${kaliPujaReminderButton()}`
     : "";
   const screenContent = pageState.name === "songs"
-    ? `<div class="songs-scroll-area" aria-label="Song playlists"><div class="songs-scroll-content"><img class="screen-art" src="${encodeURI(image)}" alt="${alt}" draggable="false" />${hotspots(false, false, false)}</div></div>${themeToggle()}${navigation()}`
+    ? `<div class="songs-scroll-area" aria-label="Song playlists"><div class="songs-scroll-content"><img class="screen-art" src="${encodeURI(image)}" alt="${alt}" draggable="false" />${hotspots(false, false, false)}</div></div>${themeToggle()}${shareButton()}${navigation()}`
     : `<img class="screen-art" src="${encodeURI(image)}" alt="${alt}" draggable="false" />${pageState.name === "home" ? '<img class="home-logo" src="og%20logo.png" alt="OG Pujo Player" draggable="false" /><img class="home-center-logo" src="fontbig.png" alt="OG Pujo Player" draggable="false" />' : ""}${pageState.name === "dj" ? `<div class="dj-light-effects" aria-hidden="true"><span class="dj-stage-light dj-stage-light-1"></span><span class="dj-stage-light dj-stage-light-2"></span><span class="dj-stage-light dj-stage-light-3"></span><span class="dj-stage-light dj-stage-light-4"></span><span class="dj-stage-light dj-stage-light-5"></span><span class="dj-stage-light dj-stage-light-6"></span></div><button class="dj-light-toggle${pageState.djLightsOn ? " is-on" : ""}" type="button" data-action="dj-lights-toggle" aria-label="Turn disco lights ${pageState.djLightsOn ? "off" : "on"}" aria-pressed="${pageState.djLightsOn}" title="Turn disco lights ${pageState.djLightsOn ? "off" : "on"}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6m-5 3h4m-2-20a7 7 0 0 0-4.4 12.45c.9.74 1.4 1.52 1.4 2.55h6c0-1.03.5-1.81 1.4-2.55A7 7 0 0 0 12 1Z"/></svg></button>` : ""}${pageState.name === "mahalaya" ? mahalayaReminderButton() : ""}${countdowns}${hotspots()}`;
   page.innerHTML = screenContent;
   page.classList.toggle("dj-lights-on", pageState.name === "dj" && pageState.djLightsOn);
@@ -828,6 +891,11 @@ function setTheme() {
 }
 
 page.addEventListener("click", event => {
+  const guideButton = event.target.closest('[data-action="open-mahalaya-guide"]');
+  if (guideButton) {
+    document.querySelector("#mahalaya-guide").showModal();
+    return;
+  }
   const calendarReminderButton = event.target.closest("[data-calendar-reminder]");
   if (calendarReminderButton) {
     const festival = calendarReminderFestivals.find(item => item.id === calendarReminderButton.dataset.calendarReminder);
@@ -875,6 +943,18 @@ page.addEventListener("click", event => {
     return;
   }
   if (action === "theme") return setTheme();
+  if (action === "open-share-menu") {
+    if (shareMenu.open) {
+      shareMenu.close();
+      return;
+    }
+    const bounds = button.getBoundingClientRect();
+    shareMenu.style.top = `${bounds.bottom + 8}px`;
+    shareMenu.style.right = `${Math.max(16, window.innerWidth - bounds.right)}px`;
+    shareMenu.show();
+    void copyShareUrl();
+    return;
+  }
   if (action === "back-playlist") return navigate("playlist");
   if (action === "open-durga-songs") return navigate("durga");
   if (action === "open-durga") {

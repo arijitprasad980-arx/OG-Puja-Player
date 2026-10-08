@@ -29,6 +29,7 @@ body { color: transparent; }
   43% { opacity: .42; }
 }
 .dj-light-toggle { position: absolute; z-index: 4; top: calc(2% + clamp(30px, 8%, 36px) + 6px); right: 4%; display: grid; width: clamp(28px, 8%, 34px); aspect-ratio: 1; place-items: center; padding: 6px; border: 1px solid rgba(255, 255, 255, .68); border-radius: 50%; background: rgba(14, 18, 30, .76); color: rgba(255, 255, 255, .66); box-shadow: 0 1px 5px rgba(0, 0, 0, .45); cursor: pointer; }
+#page[data-page="dj"] .dj-light-toggle { top: calc(2% + clamp(30px, 8%, 36px) + 6px + clamp(30px, 8%, 36px) + 6px); }
 .dj-light-toggle.is-on { color: #fff; box-shadow: 0 0 8px rgba(255, 255, 255, .6), 0 1px 5px rgba(0, 0, 0, .45); }
 .dj-light-toggle svg { display: block; width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
 .dj-light-toggle:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
@@ -40,6 +41,9 @@ body { color: transparent; }
 .kali-back-button > span { position: relative; z-index: 1; color: #fff1d3; font: 24px/1 Arial, sans-serif; }
 .theme-toggle { position: absolute; z-index: 3; top: 2%; right: 4%; display: grid; width: clamp(30px, 8%, 36px); aspect-ratio: 1; place-items: center; padding: 0; border: 1px solid rgba(255, 241, 211, .85); border-radius: 50%; background: rgba(24, 19, 16, .76); color: #fff1d3; font: 20px/1 Arial, sans-serif; cursor: pointer; }
 .theme-toggle:focus-visible { outline: 2px solid #ffe4a9; outline-offset: 2px; }
+.share-toggle { position: absolute; z-index: 3; top: calc(2% + clamp(30px, 8%, 36px) + 6px); right: 4%; display: grid; width: clamp(30px, 8%, 36px); aspect-ratio: 1; place-items: center; padding: 7px; border: 1px solid rgba(255, 241, 211, .72); border-radius: 50%; background: rgba(24, 19, 16, .76); color: #fff1d3; cursor: pointer; }
+.share-toggle svg { display: block; width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
+.share-toggle:focus-visible { outline: 2px solid #ffe4a9; outline-offset: 2px; }
 .event-countdown { position: absolute; z-index: 3; left: 48%; width: 46%; padding: 4px 6px 5px; border: 1px solid rgba(255, 240, 207, .42); border-radius: 8px; background: rgba(17, 29, 38, .38); color: #fff0cf; text-align: center; text-shadow: 0 1px 8px rgba(0, 0, 0, .8); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); }
 .sasthi-countdown { top: 29.5%; }
 .kali-countdown { top: 73.5%; border-color: rgba(196, 222, 255, .48); background: rgba(11, 38, 78, .44); color: #e1efff; }
@@ -57,11 +61,38 @@ body { color: transparent; }
 .kali-countdown-reminder { top: 55%; right: auto; left: 66%; transform: translateX(-50%); padding: 7px 12px; border-color: rgba(230, 242, 255, .42); background: rgba(222, 238, 255, .07); color: #f1f7ff; font-size: 10px; letter-spacing: .08em; text-shadow: 0 0 4px rgba(241, 247, 255, .95), 0 0 10px rgba(210, 232, 255, .75), 0 1px 6px rgba(5, 19, 38, .82); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: inset 0 1px 1px rgba(255, 255, 255, .16), 0 4px 14px rgba(5, 19, 38, .16); }
 .reminder-bell .bell-filled { display: none; fill: currentColor; stroke: none; }
 .countdown-reminder:focus-visible { outline: 2px solid #fff1d3; outline-offset: 2px; }
-.mahalaya-countdown-reminder { position: absolute; z-index: 4; top: 7%; left: 50%; display: inline-flex; align-items: center; gap: 7px; transform: translateX(-50%); padding: 10px 18px; border: 1px solid rgba(255, 248, 230, .42); border-radius: 999px; appearance: none; -webkit-appearance: none; background: rgba(255, 248, 230, .03); color: #fff1d3; font: 700 13px/1.2 Arial, sans-serif; letter-spacing: .14em; text-align: center; text-decoration: none; text-shadow: 0 0 4px rgba(255, 248, 230, .95), 0 0 10px rgba(255, 248, 230, .76), 0 1px 6px rgba(0, 0, 0, .8); text-transform: uppercase; white-space: nowrap; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); box-shadow: inset 0 1px 1px rgba(255, 255, 255, .16), 0 3px 12px rgba(0, 0, 0, .16); cursor: pointer; }
+.mahalaya-reminder-controls { position: absolute; z-index: 4; top: 7%; left: 50%; display: grid; justify-items: center; gap: 6px; transform: translateX(-50%); }
+.mahalaya-countdown-reminder { position: relative; display: inline-flex; align-items: center; gap: 7px; padding: 10px 18px; border: 1px solid rgba(255, 248, 230, .42); border-radius: 999px; appearance: none; -webkit-appearance: none; background: rgba(255, 248, 230, .03); color: #fff1d3; font: 700 13px/1.2 Arial, sans-serif; letter-spacing: .14em; text-align: center; text-decoration: none; text-shadow: 0 0 4px rgba(255, 248, 230, .95), 0 0 10px rgba(255, 248, 230, .76), 0 1px 6px rgba(0, 0, 0, .8); text-transform: uppercase; white-space: nowrap; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); box-shadow: inset 0 1px 1px rgba(255, 255, 255, .16), 0 3px 12px rgba(0, 0, 0, .16); cursor: pointer; }
+.mahalaya-guide-button { display: inline-flex; min-height: 32px; align-items: center; justify-content: center; padding: 6px 11px; border: 1px solid rgba(255, 248, 230, .46); border-radius: 999px; appearance: none; -webkit-appearance: none; background: rgba(255, 248, 230, .08); color: #fff8eb; font: 700 10px/1.2 Arial, sans-serif; letter-spacing: .08em; text-shadow: 0 0 4px rgba(255, 248, 230, .78), 0 1px 6px rgba(0, 0, 0, .8); text-transform: uppercase; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: inset 0 1px 1px rgba(255, 255, 255, .18), 0 3px 12px rgba(0, 0, 0, .16); cursor: pointer; }
+.countdown-guide-button { position: absolute; z-index: 3; top: 2%; right: calc(4% + clamp(30px, 8%, 36px) + 6px); min-height: 28px; padding: 5px 9px; font-size: 9px; }
+.mahalaya-guide-button:focus-visible { outline: 2px solid #ffe4a9; outline-offset: 2px; }
 .reminder-bell { width: 11px; height: 11px; flex: 0 0 auto; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2; filter: drop-shadow(0 0 3px currentColor); }
 .mahalaya-countdown-reminder:focus-visible { outline: 2px solid #ffe4a9; outline-offset: 3px; }
 .mahalaya-notice { width: min(420px, calc(100vw - 32px)); max-height: min(90vh, 840px); padding: 0; overflow-y: auto; border: 1px solid rgba(255, 241, 211, .48); border-radius: 18px; background: linear-gradient(145deg, #302016, #17110e 72%); color: #fff1d3; box-shadow: 0 18px 60px rgba(0, 0, 0, .55); }
 .mahalaya-notice::backdrop { background: rgba(8, 6, 5, .72); backdrop-filter: blur(4px); }
+.mahalaya-guide { overflow: hidden; }
+.mahalaya-guide-header { display: flex; justify-content: flex-end; padding: 10px 10px 0; }
+.mahalaya-guide-header form { margin: 0; }
+.mahalaya-notice .mahalaya-guide-cancel { min-width: 0; padding: 7px 12px; }
+.mahalaya-guide-scroll { max-height: calc(min(90vh, 840px) - 58px); overflow-y: auto; overscroll-behavior: contain; }
+.mahalaya-guide-image { display: block; width: 100%; height: auto; }
+.share-dialog { position: fixed; z-index: 20; inset: auto; width: min(264px, calc(100vw - 32px)); max-height: min(180px, calc(100vh - 24px)); margin: 0; overflow: hidden; }
+.share-dialog-content { padding: 14px; }
+.share-dialog-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.share-dialog-header h1 { margin: 0; font: 500 18px/1.15 Georgia, serif; }
+.share-dialog-header form { flex: 0 0 auto; margin: 0; }
+.mahalaya-notice .share-dialog-header .mahalaya-guide-cancel { min-width: 0; padding: 5px 9px; font-size: 12px; }
+.share-menu-status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; clip-path: inset(50%); }
+.share-options { display: flex; justify-content: space-between; gap: 8px; }
+.mahalaya-notice .share-options .share-option { display: grid; width: 42px; min-width: 42px; height: 42px; place-items: center; padding: 9px; border-color: rgba(255, 241, 211, .48); border-radius: 50%; background: rgba(255, 241, 211, .1); }
+.share-option svg { display: block; width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
+.share-option-whatsapp { color: #a8e6b0 !important; }
+.share-option-facebook { color: #9bc7ff !important; }
+.share-option-copy { color: #fff1d3 !important; }
+.share-option-instagram { color: #ffb3cb !important; }
+.share-option-instagram svg { stroke: currentColor; }
+.share-option-facebook .facebook-mark { fill: currentColor; stroke: none; }
+.share-option-instagram .share-icon-dot { fill: currentColor; stroke: none; }
 .mahalaya-notice-content { padding: 30px 26px 24px; text-align: center; }
 .mahalaya-notice-eyebrow { margin: 0 0 12px; color: #f4bf78; font: 600 11px/1.3 Arial, sans-serif; letter-spacing: .16em; text-transform: uppercase; }
 .mahalaya-notice h1 { margin: 0 0 12px; font: 500 clamp(24px, 7vw, 32px)/1.15 Georgia, serif; }
