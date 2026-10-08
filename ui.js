@@ -76,20 +76,29 @@ audio.preload = "auto";
 const playerState = { playlistKey: null, playlist: [], index: -1, shuffle: false, repeatOne: false, error: "", pickerLifted: { mahalaya: false, durga: false, kali: false, dj: false }, pickerLiftAnimationPending: { mahalaya: false, durga: false, kali: false, dj: false } };
 let scrubbingPointerId = null;
 let theme = localStorage.getItem(themeKey) || "day";
+let pageThemeOverride = null;
 let countdownInterval;
 let mahalayaNoticeTimeout;
 
+function currentTheme() {
+  if (pageState.name === "dj" || (pageState.name === "playlist" && pageState.album === "kali")) {
+    return pageThemeOverride || "night";
+  }
+  return theme || "day";
+}
+
 function screenImage() {
+  const activeTheme = currentTheme();
   const images = {
-    home: theme === "day" ? "homeday.png" : "homenight.png",
-    songs: theme === "day" ? "songday-no-arrow.png" : "songnight-no-arrow.png",
-    countdown: theme === "day" ? "countlight.png" : "countdark.png",
-    dj: theme === "day" ? "dj day.png" : "djnight.png",
-    mahalaya: theme === "day" ? "mahalday.png" : "mahalnight.png",
-    durga: theme === "day" ? "durgaday.png" : "durganight.png",
+    home: activeTheme === "day" ? "HOMED.png" : "HOMEN.png",
+    songs: activeTheme === "day" ? "songday-no-arrow.png" : "songnight-no-arrow.png",
+    countdown: activeTheme === "day" ? "countlight.png" : "countdark.png",
+    dj: activeTheme === "day" ? "dj day.png" : "djnight.png",
+    mahalaya: activeTheme === "day" ? "mahalday.png" : "mahalnight.png",
+    durga: activeTheme === "day" ? "durgaday.png" : "durganight.png",
     playlist: pageState.album === "kali"
-      ? (theme === "day" ? "kalin.png" : "kalid.png")
-      : (theme === "day" ? "DURGAPLAY-L.png" : "DURGAPLAY-D.png")
+      ? (activeTheme === "day" ? "kalin.png" : "kalid.png")
+      : (activeTheme === "day" ? "DURGAPLAY-L.png" : "DURGAPLAY-D.png")
   };
   return images[pageState.name];
 }
@@ -100,8 +109,9 @@ function makeButton(label, className, action, position, title = label, content =
 }
 
 function themeToggle() {
-  const nextTheme = theme === "day" ? "night" : "day";
-  const icon = theme === "day" ? "☾" : "☀";
+  const activeTheme = currentTheme();
+  const nextTheme = activeTheme === "day" ? "night" : "day";
+  const icon = activeTheme === "day" ? "☾" : "☀";
   return `<button class="theme-toggle" type="button" data-action="theme" aria-label="Switch to ${nextTheme} mode" title="Switch to ${nextTheme} mode">${icon}</button>`;
 }
 
@@ -732,8 +742,8 @@ saveFestivalAlarmTimesButton.addEventListener("click", () => {
 function hotspots(includeNavigation = true, includeThemeToggle = true, includeBackButton = true) {
   const items = includeThemeToggle ? [themeToggle()] : [];
   if (pageState.name === "home") {
-    items.push(makeButton("Enter Durga songs", "home-durga", "open-durga", [10.5, 63.8, 32.5, 4.4]));
-    items.push(makeButton("Enter Kali songs", "home-kali", "open-kali", [58.5, 63.8, 33, 4.4]));
+    items.push(makeButton("Enter Durga songs", "home-durga", "open-durga", [6, 40.5, 42.5, 39.5]));
+    items.push(makeButton("Enter Kali songs", "home-kali", "open-kali", [51.2, 40.5, 42.8, 39.5]));
   }
   if (pageState.name === "songs") {
     if (includeBackButton) items.push(makeButton("Back to home", "back-button", "home", [2, 1, 11, 6]));
@@ -788,7 +798,7 @@ function render() {
     : "";
   const screenContent = pageState.name === "songs"
     ? `<div class="songs-scroll-area" aria-label="Song playlists"><div class="songs-scroll-content"><img class="screen-art" src="${encodeURI(image)}" alt="${alt}" draggable="false" />${hotspots(false, false, false)}</div></div>${themeToggle()}${navigation()}`
-    : `<img class="screen-art" src="${encodeURI(image)}" alt="${alt}" draggable="false" />${pageState.name === "dj" ? `<div class="dj-light-effects" aria-hidden="true"><span class="dj-stage-light dj-stage-light-1"></span><span class="dj-stage-light dj-stage-light-2"></span><span class="dj-stage-light dj-stage-light-3"></span><span class="dj-stage-light dj-stage-light-4"></span><span class="dj-stage-light dj-stage-light-5"></span><span class="dj-stage-light dj-stage-light-6"></span></div><button class="dj-light-toggle${pageState.djLightsOn ? " is-on" : ""}" type="button" data-action="dj-lights-toggle" aria-label="Turn disco lights ${pageState.djLightsOn ? "off" : "on"}" aria-pressed="${pageState.djLightsOn}" title="Turn disco lights ${pageState.djLightsOn ? "off" : "on"}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6m-5 3h4m-2-20a7 7 0 0 0-4.4 12.45c.9.74 1.4 1.52 1.4 2.55h6c0-1.03.5-1.81 1.4-2.55A7 7 0 0 0 12 1Z"/></svg></button>` : ""}${pageState.name === "mahalaya" ? mahalayaReminderButton() : ""}${countdowns}${hotspots()}`;
+    : `<img class="screen-art" src="${encodeURI(image)}" alt="${alt}" draggable="false" />${pageState.name === "home" ? '<img class="home-logo" src="og%20logo.png" alt="OG Pujo Player" draggable="false" /><img class="home-center-logo" src="font.png" alt="OG Pujo Player" draggable="false" />' : ""}${pageState.name === "dj" ? `<div class="dj-light-effects" aria-hidden="true"><span class="dj-stage-light dj-stage-light-1"></span><span class="dj-stage-light dj-stage-light-2"></span><span class="dj-stage-light dj-stage-light-3"></span><span class="dj-stage-light dj-stage-light-4"></span><span class="dj-stage-light dj-stage-light-5"></span><span class="dj-stage-light dj-stage-light-6"></span></div><button class="dj-light-toggle${pageState.djLightsOn ? " is-on" : ""}" type="button" data-action="dj-lights-toggle" aria-label="Turn disco lights ${pageState.djLightsOn ? "off" : "on"}" aria-pressed="${pageState.djLightsOn}" title="Turn disco lights ${pageState.djLightsOn ? "off" : "on"}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6m-5 3h4m-2-20a7 7 0 0 0-4.4 12.45c.9.74 1.4 1.52 1.4 2.55h6c0-1.03.5-1.81 1.4-2.55A7 7 0 0 0 12 1Z"/></svg></button>` : ""}${pageState.name === "mahalaya" ? mahalayaReminderButton() : ""}${countdowns}${hotspots()}`;
   page.innerHTML = screenContent;
   page.classList.toggle("dj-lights-on", pageState.name === "dj" && pageState.djLightsOn);
   updatePlaylistSongSearch("durga");
@@ -809,6 +819,7 @@ function render() {
 
 function navigate(name) {
   pageState.name = name;
+  pageThemeOverride = null;
   if (name === "dj") pageState.djLightsOn = false;
   render();
   updateMahalayaNotice();
@@ -816,16 +827,24 @@ function navigate(name) {
 }
 
 function setTheme() {
-  theme = theme === "day" ? "night" : "day";
-  localStorage.setItem(themeKey, theme);
+  const activeTheme = currentTheme();
+  const nextTheme = activeTheme === "day" ? "night" : "day";
+  const isNightDefaultPage = pageState.name === "dj" || (pageState.name === "playlist" && pageState.album === "kali");
+  if (isNightDefaultPage) {
+    pageThemeOverride = nextTheme;
+  } else {
+    theme = nextTheme;
+    localStorage.setItem(themeKey, theme);
+  }
   const screenArt = page.querySelector(".screen-art");
   if (screenArt) screenArt.src = encodeURI(screenImage());
   const toggle = page.querySelector('[data-action="theme"]');
   if (toggle) {
-    const nextTheme = theme === "day" ? "night" : "day";
-    toggle.textContent = theme === "day" ? "☾" : "☀";
-    toggle.setAttribute("aria-label", `Switch to ${nextTheme} mode`);
-    toggle.title = `Switch to ${nextTheme} mode`;
+    const displayedTheme = currentTheme();
+    const switchToTheme = displayedTheme === "day" ? "night" : "day";
+    toggle.textContent = displayedTheme === "day" ? "☾" : "☀";
+    toggle.setAttribute("aria-label", `Switch to ${switchToTheme} mode`);
+    toggle.title = `Switch to ${switchToTheme} mode`;
   }
 }
 
